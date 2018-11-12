@@ -122,12 +122,4 @@ function postToDatabase(){
 }
 </script> 
 
-<?php 
-    include('CommonMethods.php');
-    $debug = true;
-    $COMMON = new Common($debug);
 
-    $sql = "INSERT INTO `tianh-db4`.postlist(`postcontent`) VALUES(" + comment + ")";
-
-    $result = $COMMON -> executeQuery($sql, "index.html");
-?>
