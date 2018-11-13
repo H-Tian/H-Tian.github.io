@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  
+  <link rel="stylesheet" href="index.css">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Style the header */
+.header {
+  grid-area: header;
+  background-color: #f1f1f1;
+  padding: 30px;
+  text-align: center;
+  font-size: 35px;
+}
+
+/* The grid container */
+.grid-container {
+  display: grid;
+  grid-template-areas: 
+  'header header header header header header' 
+  'left middle middle middle middle right' 
+  'footer footer footer footer footer footer';
+  /* grid-column-gap: 10px; - if you want gap between the columns */
+} 
+
+.left,
+.middle,
+.right {
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+}
+
+/* Style the left column */
+.left {
+  grid-area: left;
+}
+
+/* Style the middle column */
+.middle {
+  grid-area: middle;
+}
+
+/* Style the right column */
+.right {
+  grid-area: right;
+}
+
+/* Style the footer */
+.footer {
+  grid-area: footer;
+  background-color: #f1f1f1;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+@media (max-width: 600px) {
+  .grid-container  {
+    grid-template-areas: 
+    'header header header header header header' 
+    'middle  middle middle' 
+    'footer footer footer footer footer footer';
+}
+</style>
+</head>
+<body>
+
+
+  <div id="video-container">
+    <video id="camera-stream" width="500" autoplay></video>
+  </div>
+
+<div class="grid-container">
+  <div class="header">
+    AR Campus Dash
+  </div>
+
+  <div class="middle" style="background-color:#bbb;">
+    <div id="mapHolder"></div>
+    
+  </div>  
+  
+  <div class="footer">
+    <div>
+      <textarea id="commentSection"></textarea>
+    </div>
+    <button id="dash" onclick="postComment()"> Dash </button>
+
+  </div>
+</div>
+
+</body>
+</html>
+
+<script>
+
+var options = {
+  enableHighAccuracy: true
+  //timeout: 5000,
+  //maximumAge: 0
+}
+
+function success(pos) {
+  var crd = pos.coords;
+
+  console.log('Your current position is:');
+  console.log(`Latitude : ${crd.latitude}`);
+  console.log(`Longitude: ${crd.longitude}`);
+  console.log(`More or less ${crd.accuracy} meters.`);
+}
+
+function error(err) {
+  console.warn(`ERROR(${err.code}): ${err.message}`);
+}
+
+function showOnMap(position){
+   var latlon = position.coords.latitude + "," + position.coords.longitude;
+
+   var img_url = "https://maps.googleapis.com/maps/api/staticmap?center=" + latlon + 
+    "&zoom=14&size=800x300&sensor=false&key=AIzaSyCP1k6-DrstgEszGHuI2nHGMHvpRk-kP9w";
+
+   document.getElementById("mapHolder").innerHTML = "<img src='"+img_url+"'>";
+
+
+   var comment = document.getElementById("commentSection").value;
+
+   postToDatabase(position.coords.latitude, position.coords.longitude, comment);
+
+}
+
+function postComment(){
+  if(navigator.geolocation){
+    //navigator.geolocation.getCurrentPosition(success, error, options);
+    var coord = navigator.geolocation.getCurrentPosition(showOnMap);
+    
+    // console.log(coord.coords.latitude);
+    // console.log(coord.coords.longitude);
+      
+  }
+  else{
+    console.log("Geolocation is not supported");
+  }
+
+  //postToDatabase();
+}
+
+function postToDatabase(latitude, longitude, comment){
+  //var comment = document.getElementById("commentSection").value;
+  //Using ajax to post to php which interacts with server-side sql
+
+  xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange= function(){
+    if(this.readyState == 4 && this.status == 200){
+      console.log("success!!");
+    }
+  }
+
+  xmlhttp.open("GET", "database.php?la="+latitude+"&lo="+longitude+"&co="+comment, true);
+  xmlhttp.send();
+
+}
+
+//https://blog.teamtreehouse.com/accessing-the-device-camera-with-getusermedia
+  
+window.onload = function() {
+
+  // Normalize the various vendor prefixed versions of getUserMedia.
+  navigator.getUserMedia = (navigator.getUserMedia ||
+                            navigator.webkitGetUserMedia ||
+                            navigator.mozGetUserMedia || 
+                            navigator.msGetUserMedia);
+
+
+if (navigator.getUserMedia) {
+  // Request the camera.
+  navigator.getUserMedia(
+    // Constraints
+    {
+      video: true
+    },
+
+    // Success Callback
+    function(localMediaStream) {
+      // Get a reference to the video element on the page.
+var vid = document.getElementById('camera-stream');
+
+// Create an object URL for the video stream and use this 
+// to set the video source.
+vid.src = window.URL.createObjectURL(localMediaStream);
+    },
+
+    // Error Callback
+    function(err) {
+      // Log the error to the console.
+      console.log('The following error occurred when trying to use getUserMedia: ' + err);
+    }
+  );
+
+} else {
+  alert('Sorry, your browser does not support getUserMedia');
+}
+
+}
+</script> 
+
