@@ -10,7 +10,7 @@
     margin: 4px 2px;
     cursor: pointer;
 }
-
+/*//https://blog.teamtreehouse.com/accessing-the-device-camera-with-getusermedia*/
 #video-container {
   margin: 2em auto 0;
   width: 500px;
