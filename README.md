@@ -7,3 +7,4 @@ The codes are hosted on a HTTPS site so we have steered away from the non-secure
 
 It is hosted at h-tian.github.io
 
+Don't worry about the CSS for now. That's the easiest part to ramp up with, though some tinkering with it would be cool.
