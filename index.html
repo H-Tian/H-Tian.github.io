@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <link rel="stylesheet" href="index.css">
 
 <style>
@@ -91,17 +91,67 @@ body {
   
   <div class="footer">
     <div>
-      <textarea id="commentSection"></textarea>
+      <textarea rows="10" cols="40" id="commentSection"></textarea>
     </div>
     <button id="dash" onclick="postComment()"> Dash </button>
+    <button id="scan" onclick="scanForPosts()">Scan! </button>
 
   </div>
 </div>
-
+<div id="actualComments" class="hidden">Test Comments</div>
 </body>
 </html>
 
 <script>
+
+
+function scanForPosts(){
+  //Get location and pass on to database;
+  jQuery('#actualComments').removeClass('hidden');
+    
+  if(navigator.geolocation){
+    //navigator.geolocation.getCurrentPosition(success, error, options);
+    var coord = navigator.geolocation.getCurrentPosition(scanFromDatabase);
+    
+    // console.log(coord.coords.latitude);
+    // console.log(coord.coords.longitude);
+      
+  }
+  else{ console.log("Geolocation is not supported"); }
+
+  //scanFromDatabase();
+}
+
+function scanFromDatabase(position){
+  //Pass on to php server side and evaluate the approximate range
+  //of the posts to see
+  var lat = position.coords.latitude;
+
+  var lon = position.coords.longitude;
+
+  //ajax request to php here
+  xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange= function(){
+    if(this.readyState == 4 && this.status == 200){
+      console.log("Scanned from database");
+      //get the responseText back
+      //Pass the scanned posts to the jquery to process
+      processResponseText();
+    }
+  }
+
+  xmlhttp.open("GET", "retrievePosts.php?lat=" + lat + "&lon=" + lon);
+  xmlhttp.send();
+
+}
+
+
+function processReponseText(){  
+  //Use jquery to update the comment field on camera and make it visible
+
+
+}
+
 
 var options = {
   enableHighAccuracy: true
@@ -160,10 +210,12 @@ function postToDatabase(latitude, longitude, comment){
   xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange= function(){
     if(this.readyState == 4 && this.status == 200){
-      console.log("success!!");
+      console.log("Successfully posted to database");
+      console.log(this.responseText);
     }
   }
-
+  alert("Latitude:" + latitude);
+  alert("Comment: " + comment);
   xmlhttp.open("GET", "database.php?la="+latitude+"&lo="+longitude+"&co="+comment, true);
   xmlhttp.send();
 
@@ -208,7 +260,9 @@ vid.src = window.URL.createObjectURL(localMediaStream);
 } else {
   alert('Sorry, your browser does not support getUserMedia');
 }
-
 }
+
+
+jQuery('#actualComments').width(jQuery('#camera-stream').width()).height(jQuery('#camera-stream').height()).css({top:jQuery('#camera-stream').offset().top,left:jQuery('#camera-stream').offset().left + (30)});
 </script> 
 
