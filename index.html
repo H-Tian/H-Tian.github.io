@@ -214,8 +214,8 @@ function postToDatabase(latitude, longitude, comment){
       console.log(this.responseText);
     }
   }
-  alert("Latitude:" + latitude);
-  alert("Comment: " + comment);
+  //alert("Latitude:" + latitude);
+  //alert("Comment: " + comment);
   xmlhttp.open("GET", "database.php?la="+latitude+"&lo="+longitude+"&co="+comment, true);
   xmlhttp.send();
 
