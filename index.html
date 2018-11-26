@@ -2,6 +2,9 @@
 <html>
 <head>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.6.0/aframe/build/aframe-ar.js"></script>
+
   <link rel="stylesheet" href="index.css">
 
 <style>
@@ -75,9 +78,14 @@ body {
 <body>
 
 
-  <div id="video-container">
+<!--   <div id="video-container">
     <video id="camera-stream" width="500" autoplay></video>
-  </div>
+  </div> -->
+  <a-scene embedded arjs='sourceType: webcam;'>
+    <a-box position='0 0.5 0' material='color: red;' opacity = '0'></a-box>
+      <a-text POSITION = '0 0.5 0' value="Welcome to Evan's Library '\n Test Test test Test Test test \n"></a-text>
+    <a-marker-camera preset='hiro'></a-marker-camera>
+  </a-scene>
 
 <div class="grid-container">
   <div class="header">
@@ -214,8 +222,8 @@ function postToDatabase(latitude, longitude, comment){
       console.log(this.responseText);
     }
   }
-  //alert("Latitude:" + latitude);
-  //alert("Comment: " + comment);
+  alert("Latitude:" + latitude);
+  alert("Comment: " + comment);
   xmlhttp.open("GET", "database.php?la="+latitude+"&lo="+longitude+"&co="+comment, true);
   xmlhttp.send();
 
