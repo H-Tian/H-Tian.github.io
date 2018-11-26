@@ -5,5 +5,6 @@ database authentication file in CommonMethods.php (I trust that you won't drop m
 
 The codes are hosted on a HTTPS site so we have steered away from the non-secure projects.cse.tamu.edu.
 
-It is hosted at h-tian.github.io
+It is hosted at https://h-tian.github.io/
 
+Don't worry about the CSS for now. That's the easiest part to ramp up with, though some tinkering with it would be cool.
