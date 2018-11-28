@@ -14,7 +14,7 @@ class Common
 	{
 		$this->debug = $debug; 
 		$rs = $this->connect("tianh-db4"); // db name really here
-		echo ("Connected to db3");
+		//echo ("Connected to db3");
 		return $rs;
 	}
 
@@ -27,7 +27,7 @@ class Common
 
 		// Check connection
 		if ($this->conn->connect_error) { die("Connection failed: " . $this->conn->connect_error . "<br>\n"); } 
-		echo "Connected successfully<br>\n";
+		//echo "Connected successfully<br>\n";
 	}
 
 
@@ -39,7 +39,7 @@ class Common
 		// INSERT INTO `slupoli`.`wishlist` (`id`, `item`, `cost`) VALUES (NULL, 'airplane - G5', '200000')
 		// notice 'slupoli' part
 
-		if($this->debug == true) { echo("Query-> <br>$sql<br>\n"); }
+		if($this->debug == true) {} //echo("Query-> <br>$sql<br>\n"); }
 		$rs = $this->conn->query($sql) or die("Could not execute query '$sql' in $filename<br>\n"); 
 		return $rs;
 	}			

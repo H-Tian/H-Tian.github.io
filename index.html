@@ -4,8 +4,13 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
   <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.6.0/aframe/build/aframe-ar.js"></script>
-
+  
+  <script type="text/javascript" 
+        src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  <script type="text/javascript"
+        src="jquery.touchwipe.1.1.1.js"></script>
   <link rel="stylesheet" href="index.css">
+
 
 <style>
 * {
@@ -81,15 +86,14 @@ body {
 <!--   <div id="video-container">
     <video id="camera-stream" width="500" autoplay></video>
   </div> -->
-  <a-scene embedded arjs='sourceType: webcam;'>
+  <a-scene id="cameraSource" embedded arjs='sourceType: webcam;'>
     <!-- <a-box position='0 0.5 0' material='color: red;' opacity = '0'></a-box> -->
-      <a-text POSITION = '0 0.5 0' value="Welcome to Evan's Library '\n Test Test test Test Test test \n"></a-text>
-    <a-marker-camera preset='hiro'></a-marker-camera>
+      <a-text id="a-text" POSITION = '0 0.5 0' value="Welcome to Evan's Library '\n Test Test test Test Test test \n"></a-text>
+    <a-marker-camera preset='hiro' id="oneMarker" ref="oneMarker"></a-marker-camera>
   </a-scene>
 
 <div class="grid-container">
   <div class="header">
-    AR Campus Dash
   </div>
 
   <div class="middle" style="background-color:#bbb;">
@@ -106,12 +110,23 @@ body {
 
   </div>
 </div>
-<div id="actualComments" class="hidden">Test Comments</div>
+<div id="actualComments" class="hidden"></div>
+<div id="my-comment"></div>
 </body>
 </html>
 
 <script>
 
+// window.setInterval(function verifyQRCodeLoad(){
+//   var oneMarker = document.querySelector("#oneMarker");
+//   if(oneMarker.object3D.visible === true){
+//     console.log("can see the marker now");
+//   }
+//   else{
+//     console.log("cannot see the marker now");
+//   }
+
+// }, 1000);
 
 function scanForPosts(){
   //Get location and pass on to database;
@@ -144,7 +159,9 @@ function scanFromDatabase(position){
       console.log("Scanned from database");
       //get the responseText back
       //Pass the scanned posts to the jquery to process
-      processResponseText();
+      console.log(this.responseText);
+      processResponseText(this.responseText);
+    
     }
   }
 
@@ -154,10 +171,17 @@ function scanFromDatabase(position){
 }
 
 
-function processReponseText(){  
+function processResponseText(response){  
   //Use jquery to update the comment field on camera and make it visible
-
-
+  //response = response . "haha";
+  $('#actualComments').append(response);
+  alert("Inside processResponseText");
+  //$('#actualComments').append("Testing \n testing");
+  
+  //string newResponse = response.replace(/(?:\r\n|\r|\n)/g, '<br>');
+  //$('#actualComments').append(newResponse);
+  
+   
 }
 
 
@@ -272,5 +296,24 @@ vid.src = window.URL.createObjectURL(localMediaStream);
 
 
 jQuery('#actualComments').width(jQuery('#camera-stream').width()).height(jQuery('#camera-stream').height()).css({top:jQuery('#camera-stream').offset().top,left:jQuery('#camera-stream').offset().left + (30)});
+
+// jQuery(document).ready(function(){
+//   $('#my-comment').EasyComment({
+//     path:"./easy-comment"
+//   });
+// });
+
+//Using touch swipe library
+//http://www.netcu.de/jquery-touchwipe-iphone-ipad-library
+$("#a-text").touchwipe({
+     wipeLeft: function() { alert("left"); },
+     wipeRight: function() { alert("right"); },
+     wipeUp: function() { alert("up"); },
+     wipeDown: function() { alert("down"); },
+     min_move_x: 20,
+     min_move_y: 20,
+     preventDefaultEvents: true
+});
+
 </script> 
 
