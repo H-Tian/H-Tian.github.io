@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>AR Campus Dash</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.6.0/aframe/build/aframe-ar.js"></script>
+  
+  <script type="text/javascript" 
+        src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  <script type="text/javascript"
+        src="jquery.touchwipe.1.1.1.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+
+
+<style>
+#buttons {
+	padding: 0px 490px;
+}
+
+
+#comments {
+	padding: 0px 300px;
+}
+
+#navby {
+	padding: 0px 0px;
+}
+
+
+#dash {
+    background-color: rgb(90, 119, 199);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 8px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+#scan {
+    background-color: rgb(90, 119, 199);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 8px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+	.navbar {
+      margin-bottom: 20;
+      border-radius: 0;
+    
+    }
+    
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 450px}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 15px;
+      background-color: #ffffff;
+      height: 63.7%;
+    }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+    
+      .row.content {height:auto;} 
+    }
+
+
+
+
+
+</style>
+</head>
+<body onload="testSwipe()">
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+
+    
+      <a class="navbar-brand">AR Campus Dash</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+   
+    </div>
+  </div>
+</nav>
+<div class="container-fluid text-center">    
+  <div class="row content">
+  	<a-scene id="cameraSource" embedded arjs='sourceType: webcam;debugUIEnabled: false;'>
+      <a-text id="a-text" POSITION = '-0.7 3 0' value="This is a demonstration'\n On the capabilities '\n of augmented reality"></a-text>
+    <a-marker-camera preset='hiro' id="oneMarker" ref="oneMarker"></a-marker-camera>
+  </a-scene>
+  </div>
+</div>
+
+
+
+    <div class="navbar navbar-fixed-bottom">
+    <div class="container" id ="navby">
+ 	  <div id="comments">
+      <textarea rows="1" cols="80" id="commentSection"></textarea>
+  	  </div>
+  	  <div id="buttons">
+      <button id="dash" onclick="postComment()">Dash</button>
+      <button id="scan" onclick="scanForPosts()">Scan</button>
+   	  </div>
+    </div>
+	</div>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+
+function scanForPosts(){
+  //Get location and pass on to database;
+  jQuery('#actualComments').removeClass('hidden');
+    
+  if(navigator.geolocation){
+    //navigator.geolocation.getCurrentPosition(success, error, options);
+    var coord = navigator.geolocation.getCurrentPosition(scanFromDatabase);
+    
+    // console.log(coord.coords.latitude);
+    // console.log(coord.coords.longitude);
+      
+  }
+  else{ console.log("Geolocation is not supported"); }
+
+  //scanFromDatabase();
+}
+
+function scanFromDatabase(position){
+  //Pass on to php server side and evaluate the approximate range
+  //of the posts to see
+  var lat = position.coords.latitude;
+
+  var lon = position.coords.longitude;
+
+  //ajax request to php here
+  xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange= function(){
+    if(this.readyState == 4 && this.status == 200){
+      console.log("Scanned from database");
+      //get the responseText back
+      //Pass the scanned posts to the jquery to process
+      console.log(this.responseText);
+      processResponseText(this.responseText);
+    
+    }
+  }
+
+  xmlhttp.open("GET", "retrievePosts.php?lat=" + lat + "&lon=" + lon);
+  xmlhttp.send();
+
+}
+
+
+function processResponseText(response){  
+  //Use jquery to update the comment field on camera and make it visible
+  //response = response . "haha";
+  $('#actualComments').append(response);
+  alert("Inside processResponseText");
+  //$('#actualComments').append("Testing \n testing");
+  
+  //string newResponse = response.replace(/(?:\r\n|\r|\n)/g, '<br>');
+  //$('#actualComments').append(newResponse);
+  
+   
+}
+
+
+var options = {
+  enableHighAccuracy: true
+  //timeout: 5000,
+  //maximumAge: 0
+}
+
+function success(pos) {
+  var crd = pos.coords;
+
+  console.log('Your current position is:');
+  console.log(`Latitude : ${crd.latitude}`);
+  console.log(`Longitude: ${crd.longitude}`);
+  console.log(`More or less ${crd.accuracy} meters.`);
+}
+
+function error(err) {
+  console.warn(`ERROR(${err.code}): ${err.message}`);
+}
+
+
+function postComment(){
+  if(navigator.geolocation){
+    //navigator.geolocation.getCurrentPosition(success, error, options);
+    var coord = navigator.geolocation.getCurrentPosition(showOnMap);
+    
+    // console.log(coord.coords.latitude);
+    // console.log(coord.coords.longitude);
+      
+  }
+  else{
+    console.log("Geolocation is not supported");
+  }
+
+  //postToDatabase();
+}
+
+function postToDatabase(latitude, longitude, comment){
+  //var comment = document.getElementById("commentSection").value;
+  //Using ajax to post to php which interacts with server-side sql
+
+  xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange= function(){
+    if(this.readyState == 4 && this.status == 200){
+      console.log("Successfully posted to database");
+      console.log(this.responseText);
+    }
+  }
+  alert("Latitude:" + latitude);
+  alert("Comment: " + comment);
+  xmlhttp.open("GET", "database.php?la="+latitude+"&lo="+longitude+"&co="+comment, true);
+  xmlhttp.send();
+
+}
+
+//https://blog.teamtreehouse.com/accessing-the-device-camera-with-getusermedia
+  
+window.onload = function() {
+
+  // Normalize the various vendor prefixed versions of getUserMedia.
+  navigator.getUserMedia = (navigator.getUserMedia ||
+                            navigator.webkitGetUserMedia ||
+                            navigator.mozGetUserMedia || 
+                            navigator.msGetUserMedia);
+
+
+if (navigator.getUserMedia) {
+  // Request the camera.
+  navigator.getUserMedia(
+    // Constraints
+    {
+      video: true
+    },
+
+    // Success Callback
+    function(localMediaStream) {
+      // Get a reference to the video element on the page.
+var vid = document.getElementById('camera-stream');
+
+// Create an object URL for the video stream and use this 
+// to set the video source.
+vid.src = window.URL.createObjectURL(localMediaStream);
+    },
+
+    // Error Callback
+    function(err) {
+      // Log the error to the console.
+      console.log('The following error occurred when trying to use getUserMedia: ' + err);
+    }
+  );
+
+} else {
+  alert('Sorry, your browser does not support getUserMedia');
+}
+}
+
+
+jQuery('#actualComments').width(jQuery('#camera-stream').width()).height(jQuery('#camera-stream').height()).css({top:jQuery('#camera-stream').offset().top,left:jQuery('#camera-stream').offset().left + (30)});
+
+// jQuery(document).ready(function(){
+//   $('#my-comment').EasyComment({
+//     path:"./easy-comment"
+//   });
+// });
+
+//Using touch swipe library
+//http://www.netcu.de/jquery-touchwipe-iphone-ipad-library
+$("#a-text").touchwipe({
+     wipeLeft: function() { alert("left"); },
+     wipeRight: function() { alert("right"); },
+     wipeUp: function() { alert("up"); },
+     wipeDown: function() { alert("down"); },
+     min_move_x: 20,
+     min_move_y: 20,
+     preventDefaultEvents: true
+});
+
+var testSwipe;
+function testSwipe(){
+alert("testing swipe now");
+console.log("Testing swipe");
+console.log("=========================");
+var oneText = document.getElementById("a-text");
+oneText.setAttribute("value", "something else");
+}
+
+</script> 
+
