@@ -44,8 +44,7 @@ body {
 .middle,
 .right {
   padding: 10px;
-  height: 300px;
-  width: 600px; /* Should be removed. Only for demonstration */
+  height: 300px; /* Should be removed. Only for demonstration */
 }
 
 /* Style the left column */
@@ -76,20 +75,20 @@ body {
   .grid-container  {
     grid-template-areas: 
     'header header header header header header' 
-    'middle  middle middle right right right' 
+    'middle  middle middle' 
     'footer footer footer footer footer footer';
 }
 </style>
 </head>
-<body onload="testSwipe()">
-Start of body section
+<body>
+
 
 <!--   <div id="video-container">
     <video id="camera-stream" width="500" autoplay></video>
   </div> -->
-  <a-scene id="cameraSource" embedded arjs='sourceType: webcam;debugUIEnabled: false;'>
+  <a-scene id="cameraSource" embedded arjs='sourceType: webcam;'>
     <!-- <a-box position='0 0.5 0' material='color: red;' opacity = '0'></a-box> -->
-      <a-text id="a-text" POSITION = '0 -1 0' value="Welcome to Evan's Library '\n Test Test test Test Test test \n"></a-text>
+      <a-text id="a-text" POSITION = '0 0.5 0' value="Welcome to Evan's Library '\n Test Test test Test Test test \n"></a-text>
     <a-marker-camera preset='hiro' id="oneMarker" ref="oneMarker"></a-marker-camera>
   </a-scene>
 
@@ -98,22 +97,21 @@ Start of body section
   </div>
 
   <div class="middle" style="background-color:#bbb;">
-     <div id="mapHolder"></div>
-  </div>
-
-  <div class="right">
-     <div id="actualComments"></div>
+    <div id="mapHolder"></div>
+    
   </div>  
   
   <div class="footer">
     <div>
-      <textarea rows="10" cols="80" id="commentSection"></textarea>
+      <textarea rows="10" cols="40" id="commentSection"></textarea>
     </div>
     <button id="dash" onclick="postComment()"> Dash </button>
     <button id="scan" onclick="scanForPosts()">Scan! </button>
 
   </div>
 </div>
+<div id="actualComments" class="hidden"></div>
+<div id="my-comment"></div>
 </body>
 </html>
 
@@ -210,7 +208,7 @@ function showOnMap(position){
    var latlon = position.coords.latitude + "," + position.coords.longitude;
 
    var img_url = "https://maps.googleapis.com/maps/api/staticmap?center=" + latlon + 
-    "&zoom=18&size=600x300&sensor=true&key=AIzaSyCP1k6-DrstgEszGHuI2nHGMHvpRk-kP9w";
+    "&zoom=14&size=800x300&sensor=false&key=AIzaSyCP1k6-DrstgEszGHuI2nHGMHvpRk-kP9w";
 
    document.getElementById("mapHolder").innerHTML = "<img src='"+img_url+"'>";
 
@@ -317,14 +315,10 @@ $("#a-text").touchwipe({
      preventDefaultEvents: true
 });
 
-var testSwipe;
-function testSwipe(){
-alert("testing swipe now");
-console.log("Testing swipe");
-console.log("=========================");
+var = testSwipe;
+(testSwipe = function(){
 var oneText = document.getElementById("a-text");
-oneText.setAttribute("value", "something else");
-}
+oneText.setAttribute("value", "something else");})();
 
 </script> 
 
