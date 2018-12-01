@@ -40,18 +40,5 @@
 #actualComments{
   color:black;
   position: absolute;
-  width: 260px;
-  height: 300px;
-  text-align: left;
-}
 
-#mapHolder{
-  position: absolute;
-  width: 600px;
-  color: black;
 }
-
-#mapContainer{
-  width: 800px;
-}
-
